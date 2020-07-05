@@ -10,9 +10,12 @@ pipeline {
                 '''
       }
     }
-    stage('Lint HTML') {
+    stage('Upload to AWS') {
               steps {
-                  sh 'tidy -q -e *.html'
+                  withAWS(region:'eu-central-1',credentials:'jenkins') {
+                  sh 'echo "Uploading content with AWS creds"'
+                      s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'cazacov-cloud-nd')
+                  }
               }
          }
   }
